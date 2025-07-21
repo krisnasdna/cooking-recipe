@@ -46,7 +46,7 @@ export const useAuthStore = defineStore('auth', () =>{
 
     const getUser = async () =>{
 
-        const res = await token.authFetch('/user')
+        const res = await token.authFetch('user')
         const data = await res.json()
         if(res.ok){
             user.value = data
@@ -55,7 +55,7 @@ export const useAuthStore = defineStore('auth', () =>{
 
 
     const logout = async () =>{
-        const res = await token.authFetch('/logout',{
+        const res = await token.authFetch('logout',{
             method: 'post'
         })
 
