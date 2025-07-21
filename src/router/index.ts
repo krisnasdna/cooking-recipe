@@ -32,12 +32,12 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach(async (to, form) =>{
-  const auth = useAuthStore()
-  await auth.getUser()
+// router.beforeEach(async (to, form) =>{
+//   const auth = useAuthStore()
+//   await auth.getUser()
 
-  if(auth.user && to.meta.guest){
-    return {name:'home'}
-  }
-})
+//   if(auth.user && to.meta.guest){
+//     return {name:'home'}
+//   }
+// })
 export default router
