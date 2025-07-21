@@ -56,7 +56,6 @@ export const useAuthStore = defineStore('auth', () =>{
         })
 
         const data = await res.json()
-        console.log(data)
 
         if(res.ok){
             token.clearTokens()
