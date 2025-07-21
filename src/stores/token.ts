@@ -20,7 +20,7 @@ export const useTokenStore = defineStore('token', ()=>{
 
     const refreshAccessToken = async () =>{
         try{
-            const res = await fetch('/api/refresh-token',{
+            const res = await fetch('https://api-recipes-alpha.vercel.app/api/api/refresh-token',{
                 method: 'get',
                 headers:{
                     Authorization: `Bearer ${refreshToken.value}`
@@ -46,7 +46,7 @@ export const useTokenStore = defineStore('token', ()=>{
     const authFetch = async (endpoint: string, options : RequestInit = {}) =>{
         const token = accessToken.value
 
-        let res = await fetch(`/api/${endpoint}`,{
+        let res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/${endpoint}`,{
             ...options,
             headers:{
                 ...options.headers,
@@ -58,7 +58,7 @@ export const useTokenStore = defineStore('token', ()=>{
             const newToken = await refreshAccessToken()
             if(!newToken) return res
 
-            res = await fetch(`/api/${endpoint}`,{
+            res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/${endpoint}`,{
                 ...options,
                 headers:{
                     ...options.headers,

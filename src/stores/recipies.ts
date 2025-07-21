@@ -20,7 +20,7 @@ export const useRecipeStore = defineStore('recipe', () =>{
     const getRecipes = async () => {
         loading.value = true
         try{
-            const res = await fetch(`/api/recipes`)
+            const res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/recipes`)
             const data = await res.json()
             recipes.value = data
 
@@ -34,7 +34,7 @@ export const useRecipeStore = defineStore('recipe', () =>{
     const getRecipeById = async (id:number) => {
         loading.value = true
         try{
-            const res = await fetch(`/api/recipes/${id}`)
+            const res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/recipes/${id}`)
             const data = await res.json()
             recipe.value = data
 

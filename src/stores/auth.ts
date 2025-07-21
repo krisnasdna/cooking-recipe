@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () =>{
     const error:Ref<Form | null> = ref(null)
 
     const authenticate = async (endpoint: string, formData: {}) => {
-        const res = await fetch(`/api/${endpoint}`,{
+        const res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/${endpoint}`,{
             method: 'post',
             body: JSON.stringify(formData)
         })
