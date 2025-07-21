@@ -23,6 +23,8 @@ export const useTokenStore = defineStore('token', ()=>{
             const res = await fetch('https://api-recipes-alpha.vercel.app/api/api/refresh-token',{
                 method: 'get',
                 headers:{
+                    Accept : 'application/json',
+                    'Content-Type' : 'application/json',
                     Authorization: `Bearer ${refreshToken.value}`
                 }
             })
@@ -50,6 +52,8 @@ export const useTokenStore = defineStore('token', ()=>{
             ...options,
             headers:{
                 ...options.headers,
+                Accept : 'application/json',
+                'Content-Type' : 'application/json',
                 Authorization : `Bearer ${token}`
             }
         })
@@ -62,6 +66,8 @@ export const useTokenStore = defineStore('token', ()=>{
                 ...options,
                 headers:{
                     ...options.headers,
+                    Accept : 'application/json',
+                    'Content-Type' : 'application/json',
                     Authorization : `Bearer ${newToken}`
                 }
             })
