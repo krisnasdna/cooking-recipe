@@ -14,7 +14,6 @@ export const useRecipeStore = defineStore('recipe', () =>{
     const recipes: Ref<Recipe[] > = ref([])
     const recipe: Ref<Recipe | null>=ref(null)
 
-    // const baseUrl = 'https://api-recipes-alpha.vercel.app/api'
     const error = ref(null)
     const loading = ref(false)
 
