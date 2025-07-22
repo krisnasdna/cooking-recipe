@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import EditView from '@/views/EditView.vue'
+import RecipeView from '@/views/Recipe/RecipeView.vue'
+import DetailRecipeView from '@/views/DetailRecipeView.vue'
 import LoginView from '@/views/Auth/LoginView.vue'
 import RegisterView from '@/views/Auth/RegisterView.vue'
 import ForgotView from '@/views/Auth/ForgotView.vue'
@@ -16,9 +17,14 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/recipe',
+      name: 'recipe',
+      component: RecipeView,
+    },
+    {
       path: '/recipe/:id',
       name: 'detailRecipe',
-      component: EditView,
+      component: DetailRecipeView,
     },
     {
       path: '/login',

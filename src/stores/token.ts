@@ -97,28 +97,6 @@ export const useTokenStore = defineStore('token', ()=>{
         return res
 
     }
-
-    const verifyResetToken = async () =>{
-        const token = resetToken.value
-
-        if(!token) return {name: 'login'}
-
-        const res = await fetch('https://api-recipes-alpha.vercel.app/api/api/verify-reset-token',{
-            method: 'get',
-            headers:{
-                Accept : 'application/json',
-                'Content-Type' : 'application/json',
-                Authorization: `Bearer ${token}`
-            }
-        })
-
-        if(res.status === 401){
-            clearResetToken()
-            return {name: 'login'}
-        }
-
-        return true
-    }
     return {
         accessToken,
         refreshToken,
@@ -129,6 +107,5 @@ export const useTokenStore = defineStore('token', ()=>{
         setResetToken,
         clearResetToken,
         resetToken,
-        verifyResetToken
     }
 })
