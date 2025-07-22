@@ -45,11 +45,15 @@ export const useAuthStore = defineStore('auth', () =>{
     }
 
     const getUser = async () =>{
+        try {
+            const res = await token.authFetch('user');
 
-        const res = await token.authFetch('user')
-        const data = await res.json()
-        if(res.ok){
-            user.value = data
+            if (!res || !res.ok) return;
+
+            const data = await res.json();
+            user.value = data;
+        } catch (error) {
+            console.debug('Gagal mendapatkan user, kemungkinan belum login');
         }
     }
 
@@ -59,19 +63,72 @@ export const useAuthStore = defineStore('auth', () =>{
             method: 'post'
         })
 
-        const data = await res.json()
+        const data = await res?.json()
 
-        if(res.ok){
+        if(res?.ok){
             token.clearTokens()
             error.value = null
             router.push('/')
         }
     }
+
+    const forgotPassword = async (formData: {}) => {
+        try{
+            const res = await fetch('https://api-recipes-alpha.vercel.app/api/api/forget-password',{
+                headers:{
+                    Accept : 'application/json',
+                    'Content-Type' : 'application/json'
+                },
+                method: 'post',
+                body: JSON.stringify(formData)
+            })
+
+            const data = await res.json()
+
+            if(data.errors){
+                error.value = data.errors
+                
+            }
+            token.setResetToken(data.token)
+            router.push('/reset-password')
+        }catch(error){
+            return error
+        }
+    }
+
+     const resetPassword = async (formData: {}) => {
+        const resetToken  = token.resetToken
+        try{
+            const res = await fetch('https://api-recipes-alpha.vercel.app/api/api/reset-password',{
+                headers:{
+                    Accept : 'application/json',
+                    'Content-Type' : 'application/json',
+                    Authorization: `Bearer ${resetToken}`
+                },
+                method: 'post',
+                body: JSON.stringify(formData)
+            })
+
+            const data = await res.json()
+
+            if(data.errors){
+                error.value = data.errors
+            }
+            token.clearResetToken()
+            router.push('/login')
+            
+        }catch(error){
+            return error
+        }
+    }
+
     return {
         authenticate,
         error,
         user,
         getUser,
-        logout
+        logout,
+        forgotPassword,
+        resetPassword
     }
 })

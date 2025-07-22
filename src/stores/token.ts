@@ -1,8 +1,11 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 export const useTokenStore = defineStore('token', ()=>{
+    const router = useRouter()
     const accessToken = ref<string | null>(localStorage.getItem('access_token'))
     const refreshToken = ref<string | null>(localStorage.getItem('refresh_token'))
+    const resetToken = ref<string | null>(localStorage.getItem('reset_token'))
 
     function setTokens(access: string , refresh: string ){
         accessToken.value = access
@@ -17,6 +20,17 @@ export const useTokenStore = defineStore('token', ()=>{
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
     }
+
+    function setResetToken(reset : string){
+        resetToken.value = reset
+        localStorage.setItem('reset_token', reset)
+    }
+
+    function clearResetToken(){
+        resetToken.value = null
+        localStorage.removeItem('reset_token')
+    }
+
 
     const refreshAccessToken = async () =>{
         try{
@@ -48,6 +62,8 @@ export const useTokenStore = defineStore('token', ()=>{
     const authFetch = async (endpoint: string, options : RequestInit = {}) =>{
         const token = accessToken.value
 
+        if (!token) return 
+
         let res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/${endpoint}`,{
             ...options,
             headers:{
@@ -59,30 +75,60 @@ export const useTokenStore = defineStore('token', ()=>{
         })
 
         if(res.status === 401){
-            const newToken = await refreshAccessToken()
-            if(!newToken) return res
+            try{
+                const newToken = await refreshAccessToken()
+                if(!newToken) return res
 
-            res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/${endpoint}`,{
-                ...options,
-                headers:{
-                    ...options.headers,
-                    Accept : 'application/json',
-                    'Content-Type' : 'application/json',
-                    Authorization : `Bearer ${newToken}`
-                }
-            })
+                res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/${endpoint}`,{
+                    ...options,
+                    headers:{
+                        ...options.headers,
+                        Accept : 'application/json',
+                        'Content-Type' : 'application/json',
+                        Authorization : `Bearer ${newToken}`
+                    }
+                    })
+            }catch(err){
+                return new Response(null, { status: 401 });
+            }
+
         }
 
         return res
 
     }
 
+    const verifyResetToken = async () =>{
+        const token = resetToken.value
+
+        if(!token) return {name: 'login'}
+
+        const res = await fetch('https://api-recipes-alpha.vercel.app/api/api/verify-reset-token',{
+            method: 'get',
+            headers:{
+                Accept : 'application/json',
+                'Content-Type' : 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        if(res.status === 401){
+            clearResetToken()
+            return {name: 'login'}
+        }
+
+        return true
+    }
     return {
         accessToken,
         refreshToken,
         setTokens,
         clearTokens,
         refreshAccessToken,
-        authFetch
+        authFetch,
+        setResetToken,
+        clearResetToken,
+        resetToken,
+        verifyResetToken
     }
 })
