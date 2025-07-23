@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
 import * as Yup from 'yup'
 import DynamicForm from '@/components/DynamicForm.vue'
@@ -23,13 +23,13 @@ const formSchema = {
       name: 'password',
       as: 'input',
       type: 'password',
-      rules: Yup.string().required()
+      rules: Yup.string().required().min(8)
     }
   ]
 };
 
-async function handleSubmit(values){
-  const errors = await authenticate('login', values);
+async function handleSubmit(values: {}){
+  await authenticate('login', values);
 }
 </script>
 

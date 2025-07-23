@@ -1,65 +1,77 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
-import { storeToRefs } from 'pinia'
-import { reactive } from 'vue'
+import * as Yup from 'yup'
+import DynamicForm from '@/components/DynamicForm.vue';
 
-const {error} = storeToRefs(useAuthStore())
 const { authenticate } = useAuthStore()
+const formSchema = {
+  forms:{
+    name : 'Sign Up'
+  },
+  fields: [
+    {
+      label: 'Name',
+      name: 'name',
+      as: 'input',
+      type: 'text',
+      rules: Yup.string().required().max(255),
+    },
+    {
+      label: 'Email',
+      name: 'email',
+      as: 'input',
+      type: 'text',
+      rules: Yup.string().required().email(),
+    },
+    {
+      label: 'Password',
+      name: 'password',
+      as: 'input',
+      type: 'password',
+      rules: Yup.string().required().min(8)
+    },
+    {
+      label: 'Konfirmasi Password',
+      name: 'password_confirmation',
+      as: 'input',
+      type: 'password',
+      rules: Yup.string().required(),
+    },
+  ]
+};
 
-interface FormData{
-    name: string
-    email: string 
-    password : string 
-    password_confirmation : string 
+async function handleSubmit(values : {}){
+   await authenticate('register', values);
 }
-const form: FormData = reactive({name: '', email : '', password : '', password_confirmation: '' })
 </script>
 
 <template>
-<div class="flex justify-center mt-20">
-  <form @submit.prevent="authenticate('register', form)">
-    <div class="space-y-12">
-      <div class="border-b border-gray-900/10 pb-12">
-        <h2 class="text-base/7 font-semibold text-gray-900">Login</h2>
-        <p class="mt-1 text-sm/6 text-gray-600">This information will be displayed publicly so be careful what you share.</p>
-        <div class="sm:col-span-4">
-            <label for="name" class="block text-sm/6 font-medium text-gray-900">Name</label>
-            <div class="mt-2">
-                <input v-model="form.name" id="name" name="name" type="name" autocomplete="name" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-            </div>
-            <p v-if="error?.name" class="mt-2 text-red-500"> {{ error.name[0] }}</p>
+  <div class="grid grid-cols-1 lg:grid-cols-2 h-screen overflow-hidden">
+  <div class="bg-[#F86D36] hidden lg:inline">
+    <div class="flex flex-col gap-[58px]">
+        <div class="flex flex-row justify-between items-center mx-10 mt-10">
+          <h5 class="font-bold leading-1.5 text-[1.438rem] text-[#FCF1E0]">Masak Yuk</h5>
+          <RouterLink class="text-[#FCF1E0]" :to="{name: 'home'}">Back</RouterLink>
         </div>
-        <div class="sm:col-span-4">
-            <label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
-            <div class="mt-2">
-                <input v-model="form.email" id="email" name="email" type="email" autocomplete="email" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-            </div>
-            <p v-if="error?.email" class="mt-2 text-red-500"> {{ error.email[0] }}</p>
-        </div>
-        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-          <div class="sm:col-span-3">
-            <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
-            <div class="mt-2">
-              <input v-model="form.password" type="password" name="password" id="password" autocomplete="given-name" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-            </div>
-             <p  v-if="error?.password" class="mt-2 text-red-500"> {{ error.password[0] }}</p>
+        <div class="flex flex-col justify-center items-center gap-[58px]">
+          <h1 class="text-[4.188rem] font-bold text-[#FCF1E0] uppercase tracking-wide">Welcome</h1>
+          <div class="pt-10">
+            <img src="@/assets/image/ayam-goreng.png" alt="">
           </div>
-          <div class="sm:col-span-3">
-            <label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900">Confirm Password</label>
-            <div class="mt-2">
-              <input v-model="form.password_confirmation" type="password" name="password_confirmation" id="password_confirmation" autocomplete="given-name" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-            </div>
-          </div>
+          <p class="text-base text-[#FCF1E0] text-center px-20 leading-7 pt-8 tracking-wide font-light">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec sapien ultrices, sagittis metus ut, cursus quam. Fusce iaculis euismod sem, eget cursus libero pharetra id. In hac habitasse platea dictumst. </p>
         </div>
+    </div>
+  </div>
+  <div class="flex justify-center items-center bg-[#FCF1E0] px-[16px] md:px-30 lg:px-60">
+    <div class="bg-white py-4 px-4 w-full shadow-[0px_4px_0px_-1px_#000000] border border-black rounded-xl">
+      <div class="flex flex-col space-y-2">
+        <h3 class="text-[1.75rem] font-bold tracking-wide">Sign Up</h3>
+        <p class="text-sm lg:text-base text-[#4C4C4C] tracking-wide">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
       </div>
+      <DynamicForm :schema="formSchema" @onSubmit="handleSubmit"/>
     </div>
-
-    <div class="mt-6 flex items-center justify-end gap-x-6">
-      <button type="button" class="text-sm/6 font-semibold text-gray-900">Cancel</button>
-      <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
-    </div>
-  </form>
-</div>
+  </div>
+  </div>
 </template>
 
 <style scoped>
