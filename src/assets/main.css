@@ -10,3 +10,6 @@
 @theme {
   --font-main: "Mona Sans", "sans-serif"; 
 }
+body{
+  background-color: #FCF1E0;
+}
