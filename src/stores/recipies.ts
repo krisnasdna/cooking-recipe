@@ -1,24 +1,26 @@
 import { defineStore } from "pinia";
 import {  onMounted, ref, type Ref } from "vue";
-
+import { useLoadingStore } from "./loading";
+import { useTokenStore } from "./token";
+import { useRouter } from "vue-router";
+export interface Recipe{
+    id: number
+    title: string
+    description?: string
+    ingredients: string[]
+    steps: string[]
+    image: string
+    nutrition: string[]
+}
 export const useRecipeStore = defineStore('recipe', () =>{
-    interface Recipe{
-        id: number
-        title: string
-        description?: string
-        ingredients: string[]
-        steps: string[]
-        image: string
-        nutrition: string[]
-    }
     const recipes: Ref<Recipe[] > = ref([])
     const recipe: Ref<Recipe | null>=ref(null)
-
+    const router = useRouter()
     const error = ref(null)
-    const loading = ref(false)
-
+    const loading = useLoadingStore()
+    const token = useTokenStore()
     const getRecipes = async () => {
-        loading.value = true
+        loading.show()
         try{
             const res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/recipes`,{
              headers:{
@@ -32,12 +34,12 @@ export const useRecipeStore = defineStore('recipe', () =>{
         }catch(err:any){
              error.value = err?.message
         }finally{
-            loading.value = false
+            loading.hide()
         }
     }
     
     const getRecipeById = async (id:number) => {
-        loading.value = true
+        loading.show()
         try{
             const res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/recipes/${id}`,{
             headers:{
@@ -51,8 +53,26 @@ export const useRecipeStore = defineStore('recipe', () =>{
         }catch(err:any){
                 error.value = err?.message
         }finally{
-            loading.value = false
+            loading.hide()
         }
     }
-    return { error, loading,  recipes, recipe, getRecipes, getRecipeById}
+
+    async function addRecipe(form: {}) {
+        try {
+            const res = await token.authFetch('recipes', {
+                method: 'POST',
+                body: JSON.stringify(form)
+            })
+
+            const data = await res?.json()
+            if (!res?.ok) 
+            {
+                console.log(data)
+            }
+            router.push('/recipe')
+        } catch (err) {
+            console.error(err)
+        }
+    }
+    return { error, loading,  recipes, recipe, getRecipes, getRecipeById,addRecipe}
 })

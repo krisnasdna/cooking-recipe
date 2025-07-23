@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import Header from './components/Header.vue';
+import OverlayLoading from './components/OverlayLoading.vue';
+import { computed } from 'vue';
+
+const route = useRoute()
+
+const isHideHeader = computed(() =>{
+  return !route.meta.hideHeader
+})
 </script>
 
 <template>
-  <div class="mx-40">
-    <Header />
-    <RouterView />
+  <OverlayLoading/>
+  <div class="font-main">
+    <Header v-if="isHideHeader"/>
+    <div>
+      <RouterView />
+    </div>
   </div>
 </template>
 

@@ -1,13 +1,13 @@
 
 <script setup lang="ts">
+import { useLoadingStore } from '@/stores/loading';
 import { useRecipeStore } from '@/stores/recipies';
 import { storeToRefs } from 'pinia';
 import { onMounted, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 const route = useRoute()
-const { recipe, loading,error} = storeToRefs(useRecipeStore())
+const { recipe,loading,error} = storeToRefs(useRecipeStore())
 const { getRecipeById} = useRecipeStore()
-
 const id: number = Number(route.params.id)
 
 onMounted(() =>{
@@ -19,7 +19,7 @@ onMounted(() =>{
 <template>
     <div>
         <h1>Detail resep</h1>
-        <div v-if="loading">
+        <div v-if="loading.isLoading">
             loading....
         </div>
         <div v-else-if="error">

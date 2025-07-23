@@ -1,13 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RecipeView from '@/views/Recipe/RecipeView.vue'
-import DetailRecipeView from '@/views/DetailRecipeView.vue'
+import DetailRecipeView from '@/views/Recipe/DetailRecipeView.vue'
+import CreateRecipeView from '@/views/Recipe/CreateRecipeView.vue'
 import LoginView from '@/views/Auth/LoginView.vue'
 import RegisterView from '@/views/Auth/RegisterView.vue'
 import ForgotView from '@/views/Auth/ForgotView.vue'
 import ResetPasswordView from '@/views/Auth/ResetPassword.view.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useTokenStore } from '@/stores/token'
+import { useLoadingStore } from '@/stores/loading'
+import { nextTick } from 'vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -27,27 +30,42 @@ const router = createRouter({
       component: DetailRecipeView,
     },
     {
+      path: '/recipe/create',
+      name: 'addRecipe',
+      component: CreateRecipeView,
+      meta: { requiresAuth : true}
+    },
+    {
       path: '/login',
       name: 'login',
       component: LoginView,
-      meta: {guest : true}
+      meta: {
+        hideHeader: true
+      }
     },
     {
       path: '/register',
       name: 'register',
       component: RegisterView,
-      meta: {guest: true}
+      meta: {
+        hideHeader: true
+      }
     },
     {
       path: '/forget-password',
       name: 'forgetPassword',
       component: ForgotView,
-      meta: {guest: true}
+      meta: {
+        hideHeader: true
+      }
     },
     {
       path: '/reset-password',
       name: 'resetPassword',
       component: ResetPasswordView,
+      meta: {
+        hideHeader: true
+      },
       beforeEnter: async (to, from) =>{
         const token = useTokenStore()
 
@@ -78,12 +96,38 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach(async (to, form) =>{
+router.beforeEach(async (to, from) => {
+  const loading = useLoadingStore()
   const auth = useAuthStore()
-  auth.getUser()
 
-  if(auth.user && to.meta.guest){
-    return {name:'home'}
+  loading.show()
+
+  if (to.meta.requiresAuth) {
+    await auth.getUser()
+    if (!auth.user) {
+      loading.hide()
+      return { name: 'login' }
+    }
   }
+
+
+  const authPages = ['/login', '/register', '/forgetPassword']
+  if (authPages.includes(to.fullPath) && auth.user) {
+    loading.hide()
+    return { name: 'home' }
+  }
+
+
+  return true
 })
+
+router.afterEach(() => {
+  const loading = useLoadingStore()
+  nextTick(() => {
+    setTimeout(() => {
+      loading.hide()
+    }, 3500) 
+  })
+})
+
 export default router

@@ -1,21 +1,19 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth';
+import { useLoadingStore } from '@/stores/loading';
 import { useRecipeStore } from '@/stores/recipies';
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 
 const {user} = storeToRefs(useAuthStore())
-const {getUser ,logout} = useAuthStore()
+const {logout} = useAuthStore()
 const {getRecipes} = useRecipeStore()
-const { recipes, loading, error} = storeToRefs(useRecipeStore())
+const { recipes,loading, error} = storeToRefs(useRecipeStore())
 
 onMounted(()=>{
   if(!recipes.value.length){
     getRecipes()
-  }
-  if(!user.value){
-    getUser()
   }
 })
 
@@ -24,14 +22,11 @@ onMounted(()=>{
 <template>
   <main>
     <div v-if="user">
-      <h1>{{ user.name }}</h1>
-      <form @submit.prevent="logout()">
-        <button type="submit" class="cursor-pointer">logout</button>
-      </form>
-   </div>
+        <RouterLink :to="{name: 'addRecipe'}">Add recipe</RouterLink>
+    </div>
     <h1 class="text-3xl font-bold underline uppercase">resep makanan</h1>
 
-    <div v-if="loading">
+    <div v-if="loading.isLoading">
       Loading....
     </div>
     <div v-else-if="error">
