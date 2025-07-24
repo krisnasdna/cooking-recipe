@@ -13,7 +13,7 @@ const isHideHeader = computed(() =>{
 
 <template>
   <OverlayLoading/>
-  <div class="font-main">
+  <div class="font-main overflow-x-hidden">
     <Header v-if="isHideHeader" class="pb-5"/>
     <div>
       <RouterView />
