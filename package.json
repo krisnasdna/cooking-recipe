@@ -12,6 +12,7 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.52.1",
     "@tailwindcss/vite": "^4.1.11",
     "pinia": "^3.0.3",
     "tailwindcss": "^4.1.11",

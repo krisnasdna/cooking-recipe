@@ -1,19 +1,21 @@
 import { defineStore } from "pinia";
 import { useTokenStore } from "./token";
-import { ref, type Ref } from "vue";
+import { capitalize, ref, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useLoadingStore } from "./loading";
 import { useForm } from "vee-validate";
+import { useRecipeStore } from "./recipies";
 
 export interface User{
-        id: number | null
-        name:string | null
-        email : string | null
-        avatar?: string | null
+        id: number 
+        name:string 
+        email : string 
+        avatar?: string 
 }
 export const useAuthStore = defineStore('auth', () =>{
     const token = useTokenStore()
     const router = useRouter()
+    const recipe = useRecipeStore()
     interface Form{
         name: string
         email:string
@@ -21,8 +23,10 @@ export const useAuthStore = defineStore('auth', () =>{
     }
     const user: Ref<User | null> = ref(null)
     const error:Ref<Form | null> = ref(null)
-    const loading = useLoadingStore()
+    const loading = ref(false)
     const authenticate = async (endpoint: string, formData: {}) => {
+        loading.value = true
+        try{
         const res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/${endpoint}`,{
             headers:{
                 Accept : 'application/json',
@@ -31,7 +35,6 @@ export const useAuthStore = defineStore('auth', () =>{
             method: 'post',
             body: JSON.stringify(formData)
         })
-        
         const data = await res.json()
          if (data.errors) {
             error.value = data.errors;
@@ -42,10 +45,15 @@ export const useAuthStore = defineStore('auth', () =>{
         user.value = data.user;
         router.push('/');
         return null
+        }catch(error){
+            return error
+        }finally{
+            loading.value = false
+        }
     }
 
     const getUser = async () =>{
-        loading.show()
+        loading.value = true
         try {
             const res = await token.authFetch('user');
 
@@ -56,27 +64,38 @@ export const useAuthStore = defineStore('auth', () =>{
         } catch (error) {
             console.debug('Gagal mendapatkan user, kemungkinan belum login');
         }finally{
-            loading.hide()
+            loading.value = false
         }
     }
 
 
     const logout = async () =>{
-        const res = await token.authFetch('logout',{
-            method: 'post'
-        })
+        loading.value = true
+        try{
+            const res = await token.authFetch('logout',{
+                method: 'post'
+            })
 
-        const data = await res?.json()
+            const data = await res?.json()
 
-        if(res?.ok){
-            token.clearTokens()
-            error.value = null
-            user.value = null
+            if(res?.ok){
+                recipe.recipes = []
+                recipe.recipe = null
+                token.clearTokens()
+                error.value = null
+                user.value = null
+                router.push('/')
+            }
             router.push('/')
+        }catch(error){
+            return error
+        }finally{
+            loading.value = false
         }
     }
 
     const forgotPassword = async (formData: {}) => {
+        loading.value = true
         try{
             const res = await fetch('https://api-recipes-alpha.vercel.app/api/api/forget-password',{
                 headers:{
@@ -91,16 +110,20 @@ export const useAuthStore = defineStore('auth', () =>{
 
             if(data.errors){
                 error.value = data.errors
-                
             }
-            token.setResetToken(data.token)
-            router.push('/reset-password')
+            if(res.ok){
+                token.setResetToken(data.token)
+                router.push('/reset-password')
+            }
         }catch(error){
             return error
+        }finally{
+            loading.value = false
         }
     }
 
     const resetPassword = async (formData: {}) => {
+        loading.value = true
         const resetToken  = token.resetToken
         try{
             const res = await fetch('https://api-recipes-alpha.vercel.app/api/api/reset-password',{
@@ -126,6 +149,8 @@ export const useAuthStore = defineStore('auth', () =>{
 
         }catch(error){
             return error
+        }finally{
+            loading.value = false
         }
     }
 

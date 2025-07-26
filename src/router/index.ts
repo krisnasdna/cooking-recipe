@@ -7,10 +7,13 @@ import LoginView from '@/views/Auth/LoginView.vue'
 import RegisterView from '@/views/Auth/RegisterView.vue'
 import ForgotView from '@/views/Auth/ForgotView.vue'
 import ResetPasswordView from '@/views/Auth/ResetPassword.view.vue'
+import EditRecipeView from '@/views/Recipe/EditRecipeView.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useTokenStore } from '@/stores/token'
 import { useLoadingStore } from '@/stores/loading'
 import { nextTick } from 'vue'
+import MyRecipeView from '@/views/Recipe/MyRecipeView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -34,6 +37,18 @@ const router = createRouter({
       name: 'addRecipe',
       component: CreateRecipeView,
       meta: { requiresAuth : true}
+    },
+    {
+      path: '/my-recipes/edit/:id',
+      name: 'addRecipe',
+      component: EditRecipeView,
+      meta: { requiresAuth : true}
+    },
+    {
+      path: '/my-recipes',
+      name: 'myRecipe',
+      component: MyRecipeView,
+      meta: { requiresAuth : true},
     },
     {
       path: '/login',

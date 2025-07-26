@@ -3,16 +3,17 @@
     <div
       v-for="{ as, name, label, children, ...attrs } in schema.fields"
       :key="name"
-      class="flex flex-col pt-5"
+      class="flex flex-col pt-6 text-[#221F20]"
     >
-      <label :for="name" class="block font-medium mb-1">{{ label }}</label>
+      <label :for="name" class="block font-medium pb-2">{{ label }}</label>
 
       <Field
+        :disabled="loading"
         :as="as"
         :id="name"
         :name="name"
         v-bind="attrs"
-        class="w-full border p-2 rounded"
+        class="w-full bg-white py-4 px-4 md:py-4 md:px-6 rounded-2xl disabled:bg-[#F4F4F4]"
       />
 
       <template v-if="children && children.length">
@@ -26,40 +27,41 @@
         </component>
       </template>
 
-      <ErrorMessage :name="name" class="text-red-500 text-sm" />
+      <ErrorMessage :name="name" class="text-red-500 text-sm pt-1" />
 
-      <p v-if="serverErrors?.[name]" class="text-red-600 text-sm mt-1">
+      <p v-if="serverErrors?.[name]" class="text-red-600 text-sm pt-1">
         {{ serverErrors[name][0] }}
       </p>
     </div>
 
-    <div class="pt-4 flex flex-col items-center gap-5">
+    <div class="py-4 flex flex-col items-center gap-4">
       <div class="self-end" v-if="schema.forms.name === 'Sign In'">
         <RouterLink
           :to="{ name: 'forgetPassword' }"
           class="border-b border-dashed text-[#4A52E6] text-sm"
         >
-          Lupa Password?
+          Forgot Password?
         </RouterLink>
       </div>
 
-      <div class="w-[85%] pt-4">
+      <div class="w-full py-4">
         <button
           type="submit"
-          class="bg-[#F86D36] py-2 px-1 text-white rounded-lg w-full text-lg shadow-[0px_4px_0px_-1px_#000000] border border-black tracking-wide"
+          class="bg-[#221F20] py-2 px-1 text-white w-full text-lg tracking-wide font-bold rounded-3xl"
+          :disabled="loading"
         >
-          {{ schema.forms.name }}
+          {{ loading ? 'Loading...' :schema.forms.name   }}
         </button>
       </div>
 
-      <div class="pb-2 pt-4">
-        <p v-if="schema.forms.name === 'Sign In'">
+      <div class="pb-2">
+        <p v-if="schema.forms.name === 'Sign In'" class="text-sm text-[#221F20]">
           Don't have an account?
-          <RouterLink :to="{ name: 'register' }" class="text-[#4A52E6]">Sign Up</RouterLink>
+          <RouterLink :to="{ name: 'register' }" class="text-[#4A52E6]"> Sign Up</RouterLink>
         </p>
-        <p v-else-if="schema.forms.name === 'Sign Up'">
+        <p v-else-if="schema.forms.name === 'Sign Up'" class="text-sm text-[#221F20]">
           Already have an account?
-          <RouterLink :to="{ name: 'register' }" class="text-[#4A52E6]">Sign Up</RouterLink>
+          <RouterLink :to="{ name: 'login' }" class="text-[#4A52E6]"> Sign In</RouterLink>
         </p>
       </div>
     </div>
@@ -109,6 +111,6 @@ const onSubmit = (values: Record<string, any>) => {
 }
 
 const { error: rawServerErrors } = storeToRefs(useAuthStore())
-
+const { loading } = storeToRefs(useAuthStore()) 
 const serverErrors = rawServerErrors as unknown as Record<string, string[]>
 </script>

@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import Logo from './Logo.vue';
 import Menu from './Menu.vue';
 </script>
 
 <template>
     <div class="flex flex-row justify-between items-center pt-6 lg:pt-10 bg-[#D7D37F]">
         <div class="mx-4 lg:mx-15">
-            <img src="@/assets/image/logo.png" alt="" class="w-[80%] md:w-full"
+            <Logo/>
         </div>
         <div class="mx-4 lg:mx-15">
             <Menu />
