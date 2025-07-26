@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth'
 import { useRecipeStore } from '@/stores/recipies'
 import { uploadImage } from '@/utils/uploadImage'
-import { storeToRefs } from 'pinia'
 import { useForm,useFieldArray } from 'vee-validate'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import * as Yup from 'yup'
 
 const { addRecipe } = useRecipeStore()
-
-const file = ref<File | null>(null)
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; 
 
@@ -23,7 +19,6 @@ function isValidFileType(fileName: string, fileType: FileType): boolean {
   const ext = fileName.split('.').pop()?.toLowerCase() || '';
   return validFileExtensions[fileType].includes(ext);
 }
-
 const {errors, values, defineField,handleSubmit} = useForm({
   initialValues:{
     title: '',
@@ -46,7 +41,7 @@ const {errors, values, defineField,handleSubmit} = useForm({
       }
       return false;
     })
-    .test('is-valid-size', 'Max allowed size is 10Mb', (value) => {
+    .test('is-valid-size', 'Max allowed size is 5Mb', (value) => {
       if (value instanceof File) {
         return value.size <= MAX_FILE_SIZE;
       }
@@ -87,46 +82,88 @@ const [image]= defineField('image')
 const {fields:ingredientField, push: addIngredient,remove: removeIngredients} = useFieldArray('ingredients')
 const {fields:utensilField, push: addUtensil,remove: removeUtensil} = useFieldArray('utensils')
 const { fields:stepsField, push: addSteps, remove: removeSteps} = useFieldArray<{ step: string; instruction: string }>('steps')
-
+function isFile(obj: unknown): obj is File {
+  return obj instanceof File
+}
+const previewUrl = computed(() => {
+  if (isFile(values.image)) {
+    return window.URL.createObjectURL(values.image)
+  }
+  return undefined 
+})
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit" class="space-y-6">
-    <input v-model="title" placeholder="Title" class="input" v-bind="titleAttrs" />
-    <p>{{ errors.title }}</p>
-    <input type="file" @change="onFileChange" accept="image/*" />
-    <p>{{ errors.image }}</p>
-    <div v-for="(ingredient, i) in ingredientField" :key="i" class="flex gap-2">
-      <input v-model="ingredient.value" placeholder="Ingredient" class="input" />
-      <button type="button" @click="removeIngredients(i)">❌</button>
+  <div class="flex flex-col px-4 pt-10 md:px-10 lg:px-15 md:pt-20 gap-10">
+    <h1 class="text-[2.563rem] md:text-[3.438rem] 2xl:text-[4.563rem] font-semibold text-[#221F20] leading-[120%]">Create Recipe</h1>
+    <div>
+    <form @submit.prevent="onSubmit" class="space-y-6">
+      <div class="flex flex-col">
+        <label for="title" class="text-[#221F20] font-medium pb-2">Title</label>
+        <input v-model="title" placeholder="Title" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" v-bind="titleAttrs" name="title"/>
+        <p class="text-sm text-red-500 pt-1">{{ errors.title }}</p>
+      </div>
+      <div class="flex flex-col">
+        <div v-if="isFile(values.image)">
+          <p class="text-sm">New image preview:</p>
+          <img :src="previewUrl" class="w-32 h-32 object-cover rounded border" />
+        </div>
+        <label for="image" class="text-[#221F20] font-medium pb-2">Upload Image</label>
+        <input type="file" @change="onFileChange" accept="image/*" name="image" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 p-2"/>
+        <p class="text-sm text-red-500 pt-1">{{ errors.image }}</p>
+      </div>
+      <p>{{ errors.image }}</p>
+      <div class="flex flex-col">
+
+        <label for="ingredients" class="text-[#221F20] font-medium">Ingredient</label>
+        <div v-for="(ingredient, i) in ingredientField" :key="i" class="flex flex-row items-center gap-4 pt-2">
+          <input v-model="ingredient.value" placeholder="Ingredient" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" name="ingredients" />
+          <button type="button" @click="removeIngredients(i)" class="cursor-pointer">❌</button>
+        </div>
+        <p class="text-sm text-red-500 pt-1">{{ errors.ingredients }}</p>
+        <div class="pt-4">
+          <button type="button" @click="addIngredient('')" class="bg-[#221F20] text-white px-4 py-2 rounded-3xl cursor-pointer">Add Ingredient</button>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <label for="utensil" class="text-[#221F20] font-medium">Utensils</label>
+        <div v-for="(utensil, i) in utensilField" :key="i" class="flex flex-row items-center gap-4 pt-2">
+          <input v-model="utensil.value" placeholder="Utensils" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" name="utensil" />
+          <button type="button" @click="removeUtensil(i)" class="cursor-pointer">❌</button>
+        </div>
+        <p class="text-sm text-red-500 pt-1">{{ errors.utensils }}</p>
+        <div class="pt-4">
+          <button type="button" @click="addUtensil('')" class="bg-[#221F20] text-white px-4 py-2 rounded-3xl cursor-pointer">Add Utensils</button>
+        </div>
+      </div>
+      <div>
+        <label for="utensil" class="text-[#221F20] font-medium">Steps</label>
+        <div
+          v-for="(step, i) in stepsField"
+          :key="i"
+          class=" flex flex-col gap-2 pt-2" 
+        >
+          <div class="flex flex-row gap-4">
+            <input v-model="step.value.step" placeholder="Step Title" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]"  />
+            <button type="button" @click="removeSteps(i)" class="cursor-pointer">❌</button>
+          </div>
+          <textarea
+            v-model="step.value.instruction"
+            placeholder="Instruction"
+            class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" 
+          />
+        </div>
+        <p class="text-sm text-red-500 pt-1">{{ errors.steps }}</p>
+        <div class="pt-4">
+            <button type="button" @click="addSteps({step: '', instruction: ''})"  class="bg-[#221F20] text-white px-4 py-2 rounded-3xl cursor-pointer">Add Steps</button>
+        </div>
+      </div>
+      <button type="submit" class="bg-[#221F20] text-white px-4 py-2 rounded-3xl cursor-pointer">
+        submit
+      </button>
+    </form>
     </div>
-     <p>{{ errors.ingredients }}</p>
-    <button type="button" @click="addIngredient('')" class="btn">+ Add Ingredient</button>
-    <div v-for="(utensil, i) in utensilField" :key="i" class="flex gap-2">
-      <input v-model="utensil.value" placeholder="utensil" class="input" />
-      <button type="button" @click="removeUtensil(i)">❌</button>
-    </div>
-    <p>{{ errors.utensils }}</p>
-    <button type="button" @click="addUtensil('')" class="btn">+ Add Ingredient</button>
-    <div
-      v-for="(step, i) in stepsField"
-      :key="i"
-      class="space-y-2 border p-2 rounded bg-gray-50"
-    >
-      <input v-model="step.value.step" placeholder="Step Title" class="input" />
-      <textarea
-        v-model="step.value.instruction"
-        placeholder="Instruction"
-        class="textarea"
-      />
-      <p>{{ errors.steps }}</p>
-      <button type="button" @click="removeSteps(i)">❌</button>
-    </div>
-    <button type="button" @click="addSteps({step: '', instruction: ''})" class="btn">+ Add Step</button>
-    <button type="submit">
-      submit
-    </button>
-  </form>
+  </div>
 </template>
 
 <style scoped>

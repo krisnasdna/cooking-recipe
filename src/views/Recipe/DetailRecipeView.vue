@@ -6,12 +6,13 @@ import { storeToRefs } from 'pinia';
 import { onMounted, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 const route = useRoute()
-const { recipe,loading,error} = storeToRefs(useRecipeStore())
-const { getRecipeById} = useRecipeStore()
+const { recipe,loading,error, recipes} = storeToRefs(useRecipeStore())
+const { getRecipeById,getMoreRecipe} = useRecipeStore()
 const id: number = Number(route.params.id)
 
 onMounted(() =>{
     getRecipeById(id)
+    getMoreRecipe(id)
 })
 
 </script>
@@ -75,93 +76,20 @@ onMounted(() =>{
     <div class="px-4 md:px-10 lg:px-15 pt-16">
         <h1 class="text-[2.563rem] md:text-[3.438rem] lg:text-[4.563rem] font-semibold text-[#221F20]">More recipes</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 pt-5  gap-5 2xl:gap-10">
-            <div class="w-full">
-                <div class="overflow-hidden">
-                <img src="@/assets/image/card.jpg" alt="" class="w-full h-full object-cover">
-                </div>
-                <div class="flex flex-col pt-4 w-full">
-                <h6 class="text-[1.5rem] md:text-[1.75rem] lg:text-[1.875rem] 2xl:text-[2.563rem] font-semibold truncate overflow-hidden whitespace-nowrap w-full text-[#221F20]">
-                    Soto Ayam
-                </h6>
-                </div>
-            </div>
-            <div class="w-full">
-                <div class="overflow-hidden">
-                <img src="@/assets/image/card.jpg" alt="" class="w-full h-full object-cover">
-                </div>
-                <div class="flex flex-col pt-4 w-full">
-                <h6 class="text-[1.5rem] md:text-[1.75rem] lg:text-[1.875rem] 2xl:text-[2.563rem] font-semibold truncate overflow-hidden whitespace-nowrap w-full text-[#221F20]">
-                    Soto Ayam
-                </h6>
-                </div>
-            </div>
-            <div class="w-full">
-                <div class="overflow-hidden">
-                <img src="@/assets/image/card.jpg" alt="" class="w-full h-full object-cover">
-                </div>
-                <div class="flex flex-col pt-4 w-full">
-                <h6 class="text-[1.5rem] md:text-[1.75rem] lg:text-[1.875rem] 2xl:text-[2.563rem] font-semibold truncate overflow-hidden whitespace-nowrap w-full text-[#221F20]">
-                    Soto Ayam
-                </h6>
-                </div>
-            </div>
-            <div class="w-full">
-                <div class="overflow-hidden">
-                <img src="@/assets/image/card.jpg" alt="" class="w-full h-full object-cover">
-                </div>
-                <div class="flex flex-col pt-4 w-full">
-                <h6 class="text-[1.5rem] md:text-[1.75rem] lg:text-[1.875rem] 2xl:text-[2.563rem] font-semibold truncate overflow-hidden whitespace-nowrap w-full text-[#221F20]">
-                    Soto Ayam
-                </h6>
-                </div>
+            <div class="w-full" v-for="recipe in recipes" :key="recipe?.id">
+                <RouterLink :to="`/recipe/${Number(recipe.id)}`">
+                    <div class="overflow-hidden aspect-square">
+                    <img :src="recipe.image" alt="" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col pt-4 w-full">
+                    <h6 class="text-[1.5rem] md:text-[1.75rem] lg:text-[1.875rem] 2xl:text-[2.563rem] font-semibold truncate overflow-hidden whitespace-nowrap w-full text-[#221F20]">
+                        {{ recipe.title }}
+                    </h6>
+                    </div>
+                </RouterLink>
             </div>
         </div>
     </div>
-    <!-- <div class="px-4 md:px-10 lg:px-15 pt-10">
-        <h1 class="text-[4.563rem] font-semibold text-[#221F20] leading-[120%]">Instructions </h1>
-        <div class="grid grid-cols-2">
-            <div>
-
-            </div>
-            <div>
-
-            </div>
-        </div>
-    </div> -->
-    
-    <!-- <div>
-        <h1>Detail resep</h1>
-        <div v-if="loading">
-            loading....
-        </div>
-        <div v-else-if="error">
-            error : {{ error }}
-        </div>
-        <ul v-else>
-            <li>
-                <h1>{{ recipe?.title }}</h1>
-                <p>{{ recipe?.description }}</p>
-                <h2>Bahan</h2>
-                <ul>
-                    <li v-for="ingredient in recipe?.ingredients">
-                        {{ ingredient }}
-                    </li>
-                </ul>
-                <h2>Cara Masak</h2>
-                <ul>
-                    <li v-for="step in recipe?.steps">
-                        {{ step }}
-                    </li>
-                </ul>
-                <h2>Nutrisi</h2>
-                <ul>
-                    <li v-for="(nutrition, key ) in recipe?.nutrition" :key="key">
-                       {{ key }}: {{ nutrition }}
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div> -->
 </template>
 
 <style scoped>

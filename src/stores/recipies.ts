@@ -90,6 +90,28 @@ export const useRecipeStore = defineStore('recipe', () =>{
             loading.value = false
         }
     }
+    const getMoreRecipe = async (id:number) => {
+        loading.value = true
+        try{
+            const res = await fetch(`https://api-recipes-alpha.vercel.app/api/api/recipes/more?exclude_id=${id}`,{
+            headers:{
+                Accept : 'application/json',
+                'Content-Type' : 'application/json'
+            },
+            })
+            const data = await res.json()
+            if (!data || res?.status === 404) {
+                router.replace({ name: 'not-found' }) 
+                return
+            }
+            recipes.value = data
+
+        }catch(err:any){
+                error.value = err?.message
+        }finally{
+            loading.value = false
+        }
+    }
     const myRecipes = async (page = 1) => {
         loading.value = true
         try{
@@ -194,5 +216,5 @@ export const useRecipeStore = defineStore('recipe', () =>{
             loading.value = false
         }
     }
-    return { error, loading,  recipes, recipe, getRecipes, getRecipeById,addRecipe,currentPage,lastPage,loadMore,searchRecipes,keyword,myRecipes,resetRecipes, removeRecipe,getMyRecipeById,editRecipe}
+    return { error, loading,  recipes, recipe, getRecipes, getRecipeById,addRecipe,currentPage,lastPage,loadMore,searchRecipes,keyword,myRecipes,resetRecipes, removeRecipe,getMyRecipeById,editRecipe,getMoreRecipe}
 })

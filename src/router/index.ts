@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RecipeView from '@/views/Recipe/RecipeView.vue'
 import DetailRecipeView from '@/views/Recipe/DetailRecipeView.vue'
-import CreateRecipeView from '@/views/Recipe/CreateRecipeView.vue'
 import LoginView from '@/views/Auth/LoginView.vue'
 import RegisterView from '@/views/Auth/RegisterView.vue'
 import ForgotView from '@/views/Auth/ForgotView.vue'
@@ -14,6 +13,7 @@ import { useTokenStore } from '@/stores/token'
 import { useLoadingStore } from '@/stores/loading'
 import { nextTick } from 'vue'
 import MyRecipeView from '@/views/Recipe/MyRecipeView.vue'
+import CreateRecipeView from '@/views/Recipe/CreateRecipeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,9 +24,12 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/404',
+      path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: NotFoundView,
+      meta: {
+        hideHeader: true
+      }
     },
     {
       path: '/recipe',
@@ -39,12 +42,6 @@ const router = createRouter({
       component: DetailRecipeView,
     },
     {
-      path: '/my-recipe/create',
-      name: 'addRecipe',
-      component: CreateRecipeView,
-      meta: { requiresAuth : true}
-    },
-    {
       path: '/my-recipes/edit/:id',
       name: 'addRecipe',
       component: EditRecipeView,
@@ -54,6 +51,12 @@ const router = createRouter({
       path: '/my-recipes',
       name: 'myRecipe',
       component: MyRecipeView,
+      meta: { requiresAuth : true},
+    },
+    {
+      path: '/my-recipes/create',
+      name: 'addrecipe',
+      component: CreateRecipeView,
       meta: { requiresAuth : true},
     },
     {

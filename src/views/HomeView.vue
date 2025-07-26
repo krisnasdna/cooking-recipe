@@ -1,5 +1,14 @@
 <script setup lang="ts">
+import { useRecipeStore } from '@/stores/recipies';
+import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
+const {recipes} = storeToRefs(useRecipeStore())
+const { getRecipes} = useRecipeStore()
+
+onMounted(()=>{
+  getRecipes()
+})
 </script>
 
 <template>
@@ -61,26 +70,18 @@ import { RouterLink } from 'vue-router';
       <RouterLink :to="{name: 'recipe'}" class="text-base font-semibold text-[#221F20] hidden md:inline-block">view all recipes</RouterLink>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 pt-5 2xl:pt-20  gap-5 2xl:gap-10">
-      <div class="w-full">
-        <div class="overflow-hidden">
-          <img src="@/assets/image/card.jpg" alt="" class="w-full h-full object-cover">
+    <div class="w-full" v-for="recipe in recipes" :key="recipe?.id">
+      <RouterLink :to="`/recipe/${Number(recipe.id)}`">
+        <div class="overflow-hidden aspect-square">
+          <img :src="recipe.image" alt="" class="w-full h-full object-cover">
         </div>
         <div class="flex flex-col pt-4 w-full">
           <h6 class="text-[1.5rem] md:text-[1.75rem] lg:text-[1.875rem] 2xl:text-[2.563rem] font-semibold truncate overflow-hidden whitespace-nowrap w-full text-[#221F20]">
-            Soto Ayam
+            {{ recipe.title }}
           </h6>
         </div>
-      </div>
-      <div class="w-full">
-        <div class="overflow-hidden">
-          <img src="@/assets/image/card.jpg" alt="" class="w-full h-full object-cover">
-        </div>
-        <div class="flex flex-col pt-4 w-full">
-          <h6 class="text-[1.5rem] md:text-[1.75rem] lg:text-[1.875rem] 2xl:text-[2.563rem] font-semibold truncate overflow-hidden whitespace-nowrap w-full text-[#221F20]">
-            Soto Ayam
-          </h6>
-        </div>
-      </div>
+      </RouterLink>
+    </div>
     </div>
     <!-- <div class="grid grid-cols-2 lg:my-20 2xl:my-40 gap-10 items-start justify-start">
       <div class="">
