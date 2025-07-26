@@ -78,6 +78,10 @@ export const useRecipeStore = defineStore('recipe', () =>{
             },
             })
             const data = await res.json()
+            if (!data || res?.status === 404) {
+                router.replace({ name: 'not-found' }) 
+                return
+            }
             recipe.value = data
 
         }catch(err:any){
@@ -118,6 +122,10 @@ export const useRecipeStore = defineStore('recipe', () =>{
             },
             })
             const data = await res?.json()
+            if (!data || res?.status === 404) {
+                router.replace({ name: 'not-found' }) 
+                return
+            }
             recipe.value = data
 
         }catch(err:any){

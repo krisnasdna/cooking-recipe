@@ -8,6 +8,7 @@ import RegisterView from '@/views/Auth/RegisterView.vue'
 import ForgotView from '@/views/Auth/ForgotView.vue'
 import ResetPasswordView from '@/views/Auth/ResetPassword.view.vue'
 import EditRecipeView from '@/views/Recipe/EditRecipeView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useTokenStore } from '@/stores/token'
 import { useLoadingStore } from '@/stores/loading'
@@ -23,6 +24,11 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/404',
+      name: 'not-found',
+      component: NotFoundView,
+    },
+    {
       path: '/recipe',
       name: 'recipe',
       component: RecipeView,
@@ -33,7 +39,7 @@ const router = createRouter({
       component: DetailRecipeView,
     },
     {
-      path: '/recipe/create',
+      path: '/my-recipe/create',
       name: 'addRecipe',
       component: CreateRecipeView,
       meta: { requiresAuth : true}
