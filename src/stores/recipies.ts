@@ -3,6 +3,7 @@ import {  onMounted, ref, type Ref } from "vue";
 import { useLoadingStore } from "./loading";
 import { useTokenStore } from "./token";
 import { useRouter } from "vue-router";
+import { useModalStore } from "./modal";
 
 export interface Step {
   step: string
@@ -28,6 +29,7 @@ export const useRecipeStore = defineStore('recipe', () =>{
     const loading = ref(false)
     const keyword = ref('')
     const token = useTokenStore()
+    const modal = useModalStore()
     const getRecipes = async (page = 1, search ='') => {
         loading.value = true
         try{
@@ -59,6 +61,10 @@ export const useRecipeStore = defineStore('recipe', () =>{
         if(currentPage.value < lastPage.value && !loading.value){
             await getRecipes(currentPage.value + 1)
         }
+    }
+    const loadMoreMyRecipes = async () => {
+        if (loading.value || currentPage.value >= lastPage.value) return
+        await myRecipes(currentPage.value + 1)
     }
     const searchRecipes = async (term: string) => {
         keyword.value = term
@@ -115,14 +121,18 @@ export const useRecipeStore = defineStore('recipe', () =>{
     const myRecipes = async (page = 1) => {
         loading.value = true
         try{
-            const res = await token.authFetch(`my-recipes?${page}`,{
+            const res = await token.authFetch(`my-recipes?page=${page}`,{
                 method: 'get'
             })
             const data = await res?.json()
-            if(page === 1){
-                recipes.value = data.data
-            }else{
-                recipes.value.push(...data.data)
+
+            if (page === 1) {
+            recipes.value = data.data
+            } else {
+            const newRecipes = data.data.filter(
+                (recipe: any) => !recipes.value.some((r: any) => r.id === recipe.id)
+            )
+                recipes.value.push(...newRecipes)
             }
 
             currentPage.value = data.current_page
@@ -164,11 +174,15 @@ export const useRecipeStore = defineStore('recipe', () =>{
                 body: JSON.stringify(form)
             })
             const data = await res?.json()
+
             if (!res?.ok) 
             {
-            console.log(data)
+                modal.showToast('Failed to add recipe. Please try again')
             }
+
+            modal.showToast('Recipe added successfully!')
             router.push('/my-recipes')
+
         } catch (err) {
             console.error(err)
         }finally{
@@ -186,10 +200,11 @@ export const useRecipeStore = defineStore('recipe', () =>{
 
             if (!res?.ok) 
             {
-                console.log(data)
+                modal.showToast('Failed remove recipe. Please try again')
             }
-            recipes.value = []
-            router.push('/my-recipes')
+            modal.hideModalRemove()
+            modal.showToast('Recipe remove successfully!')
+            recipes.value = recipes.value.filter(recipe => recipe.id !== id)
         } catch (err) {
             console.error(err)
         }finally{
@@ -207,8 +222,9 @@ export const useRecipeStore = defineStore('recipe', () =>{
             const data = await res?.json()
             if (!res?.ok) 
             {
-                console.log(data)
+                modal.showToast('Failed to edit recipe. Please try again')
             }
+            modal.showToast('Recipe edit successfully!')
             router.push('/my-recipes')
         } catch (err) {
             console.error(err)
@@ -216,5 +232,5 @@ export const useRecipeStore = defineStore('recipe', () =>{
             loading.value = false
         }
     }
-    return { error, loading,  recipes, recipe, getRecipes, getRecipeById,addRecipe,currentPage,lastPage,loadMore,searchRecipes,keyword,myRecipes,resetRecipes, removeRecipe,getMyRecipeById,editRecipe,getMoreRecipe}
+    return { error, loading,  recipes, recipe, getRecipes, getRecipeById,addRecipe,currentPage,lastPage,loadMore,searchRecipes,keyword,myRecipes,resetRecipes, removeRecipe,getMyRecipeById,editRecipe,getMoreRecipe,loadMoreMyRecipes}
 })

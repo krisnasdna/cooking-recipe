@@ -6,7 +6,9 @@ import Menu from './Menu.vue';
 <template>
     <div class="flex flex-row justify-between items-center pt-6 lg:pt-10 bg-[#D7D37F]">
         <div class="mx-4 lg:mx-15">
+        <RouterLink :to="{name: 'home'}">
             <Logo/>
+        </RouterLink>
         </div>
         <div class="mx-4 lg:mx-15">
             <Menu />

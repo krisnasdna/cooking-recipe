@@ -3,18 +3,24 @@
 import { useLoadingStore } from '@/stores/loading';
 import { useRecipeStore } from '@/stores/recipies';
 import { storeToRefs } from 'pinia';
-import { onMounted, watchEffect } from 'vue';
+import { onMounted, watch, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 const route = useRoute()
 const { recipe,loading,error, recipes} = storeToRefs(useRecipeStore())
 const { getRecipeById,getMoreRecipe} = useRecipeStore()
 const id: number = Number(route.params.id)
 
-onMounted(() =>{
-    getRecipeById(id)
-    getMoreRecipe(id)
-})
-
+watch(
+  () => route.params.id,
+  (newId) => {
+    const id = Number(newId);
+    if (!isNaN(id)) {
+      getRecipeById(id);
+      getMoreRecipe(id);
+    }
+  },
+  { immediate: true } 
+);
 </script>
 
 <template>

@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import { useLoadingStore } from "./loading";
 import { useForm } from "vee-validate";
 import { useRecipeStore } from "./recipies";
+import { useModalStore } from "./modal";
 
 export interface User{
         id: number 
@@ -24,6 +25,7 @@ export const useAuthStore = defineStore('auth', () =>{
     const user: Ref<User | null> = ref(null)
     const error:Ref<Form | null> = ref(null)
     const loading = ref(false)
+    const modal = useModalStore()
     const authenticate = async (endpoint: string, formData: {}) => {
         loading.value = true
         try{
@@ -36,15 +38,21 @@ export const useAuthStore = defineStore('auth', () =>{
             body: JSON.stringify(formData)
         })
         const data = await res.json()
-         if (data.errors) {
+        if (data.errors) {
             error.value = data.errors;
             return data.errors;
         }
-
-        token.setTokens(data.token, data.refresh_token);
-        user.value = data.user;
-        router.push('/');
-        return null
+        if(res.ok){
+            modal.showToast(`Welcome ${data.user.name}`)
+            token.setTokens(data.token, data.refresh_token);
+            user.value = data.user;
+            router.push('/');
+            return null
+        }
+        else{
+            modal.showToast('Failed to login. Please try again')
+            return null
+        }
         }catch(error){
             return error
         }finally{
@@ -79,14 +87,19 @@ export const useAuthStore = defineStore('auth', () =>{
             const data = await res?.json()
 
             if(res?.ok){
+                modal.showToast('Logout successfully!')
+                modal.hideModalLogout()
                 recipe.recipes = []
                 recipe.recipe = null
                 token.clearTokens()
                 error.value = null
                 user.value = null
                 router.push('/')
+            }else{
+                modal.showToast('Failed to logout. Please try again')
+                modal.hideModalLogout()
+                router.push('/')
             }
-            router.push('/')
         }catch(error){
             return error
         }finally{
@@ -141,12 +154,17 @@ export const useAuthStore = defineStore('auth', () =>{
             if(data.errors){
                 error.value = data.errors
             }
+            if(data.message){
+                console.log(data.mesasage)
+            }
             if(res.ok){
+                modal.showToast('Password reset successful. You can log in with your new password.')
                 error.value = null
                 token.clearResetToken()
                 router.push('/login')
+            }else{
+                modal.showToast('Failed to reset your password. Please try again')
             }
-
         }catch(error){
             return error
         }finally{

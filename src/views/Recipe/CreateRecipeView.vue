@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useRecipeStore } from '@/stores/recipies'
 import { uploadImage } from '@/utils/uploadImage'
+import { storeToRefs } from 'pinia'
 import { useForm,useFieldArray } from 'vee-validate'
 import { computed, reactive, ref } from 'vue'
 import * as Yup from 'yup'
-
+const {loading} = storeToRefs(useRecipeStore())
 const { addRecipe } = useRecipeStore()
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; 
@@ -94,13 +95,13 @@ const previewUrl = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col px-4 pt-10 md:px-10 lg:px-15 md:pt-20 gap-10">
+  <div class="flex flex-col px-4 pt-10 md:px-10 lg:px-15 md:py-20 gap-10">
     <h1 class="text-[2.563rem] md:text-[3.438rem] 2xl:text-[4.563rem] font-semibold text-[#221F20] leading-[120%]">Create Recipe</h1>
     <div>
     <form @submit.prevent="onSubmit" class="space-y-6">
       <div class="flex flex-col">
         <label for="title" class="text-[#221F20] font-medium pb-2">Title</label>
-        <input v-model="title" placeholder="Title" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" v-bind="titleAttrs" name="title"/>
+        <input v-model="title" placeholder="Title" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" v-bind="titleAttrs" name="title" :disabled="loading"/>
         <p class="text-sm text-red-500 pt-1">{{ errors.title }}</p>
       </div>
       <div class="flex flex-col">
@@ -109,7 +110,7 @@ const previewUrl = computed(() => {
           <img :src="previewUrl" class="w-32 h-32 object-cover rounded border" />
         </div>
         <label for="image" class="text-[#221F20] font-medium pb-2">Upload Image</label>
-        <input type="file" @change="onFileChange" accept="image/*" name="image" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 p-2"/>
+        <input type="file" @change="onFileChange" accept="image/*" name="image" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 p-2" :disabled="loading"/>
         <p class="text-sm text-red-500 pt-1">{{ errors.image }}</p>
       </div>
       <p>{{ errors.image }}</p>
@@ -117,23 +118,31 @@ const previewUrl = computed(() => {
 
         <label for="ingredients" class="text-[#221F20] font-medium">Ingredient</label>
         <div v-for="(ingredient, i) in ingredientField" :key="i" class="flex flex-row items-center gap-4 pt-2">
-          <input v-model="ingredient.value" placeholder="Ingredient" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" name="ingredients" />
-          <button type="button" @click="removeIngredients(i)" class="cursor-pointer">❌</button>
+          <input v-model="ingredient.value" placeholder="Ingredient" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" name="ingredients" :disabled="loading"/>
+          <button type="button" @click="removeIngredients(i)" class="cursor-pointer">
+            <div class="w-6">
+              <img src="@/assets/image/remove.png" alt=""></img>
+            </div>
+          </button>
         </div>
         <p class="text-sm text-red-500 pt-1">{{ errors.ingredients }}</p>
         <div class="pt-4">
-          <button type="button" @click="addIngredient('')" class="bg-[#221F20] text-white px-4 py-2 rounded-3xl cursor-pointer">Add Ingredient</button>
+          <button type="button" @click="addIngredient('')"  class="border-[#221F20] border text-[#221F20] px-4 py-2 rounded-lg cursor-pointer">Add Ingredient</button>
         </div>
       </div>
       <div class="flex flex-col">
         <label for="utensil" class="text-[#221F20] font-medium">Utensils</label>
         <div v-for="(utensil, i) in utensilField" :key="i" class="flex flex-row items-center gap-4 pt-2">
-          <input v-model="utensil.value" placeholder="Utensils" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" name="utensil" />
-          <button type="button" @click="removeUtensil(i)" class="cursor-pointer">❌</button>
+          <input v-model="utensil.value" placeholder="Utensils" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" name="utensil" :disabled="loading"/>
+          <button type="button" @click="removeUtensil(i)" class="cursor-pointer">
+            <div class="w-6">
+              <img src="@/assets/image/remove.png" alt=""></img>
+            </div>
+          </button>
         </div>
         <p class="text-sm text-red-500 pt-1">{{ errors.utensils }}</p>
         <div class="pt-4">
-          <button type="button" @click="addUtensil('')" class="bg-[#221F20] text-white px-4 py-2 rounded-3xl cursor-pointer">Add Utensils</button>
+          <button type="button" @click="addUtensil('')"  class="border-[#221F20] border text-[#221F20] px-4 py-2 rounded-lg cursor-pointer">Add Utensils</button>
         </div>
       </div>
       <div>
@@ -144,23 +153,30 @@ const previewUrl = computed(() => {
           class=" flex flex-col gap-2 pt-2" 
         >
           <div class="flex flex-row gap-4">
-            <input v-model="step.value.step" placeholder="Step Title" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]"  />
-            <button type="button" @click="removeSteps(i)" class="cursor-pointer">❌</button>
+            <input v-model="step.value.step" placeholder="Step Title" class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]"  :disabled="loading"/>
+            <button type="button" @click="removeSteps(i)" class="cursor-pointer">
+            <div class="w-6">
+              <img src="@/assets/image/remove.png" alt=""></img>
+            </div>
+            </button>
           </div>
           <textarea
             v-model="step.value.instruction"
             placeholder="Instruction"
-            class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]" 
+            class="w-full bg-white py-4 px-4 md:py-2 md:px-2 rounded-lg disabled:bg-[#F4F4F4]"
+            :disabled="loading" 
           />
         </div>
         <p class="text-sm text-red-500 pt-1">{{ errors.steps }}</p>
         <div class="pt-4">
-            <button type="button" @click="addSteps({step: '', instruction: ''})"  class="bg-[#221F20] text-white px-4 py-2 rounded-3xl cursor-pointer">Add Steps</button>
+            <button type="button" @click="addSteps({step: '', instruction: ''})"  class="border-[#221F20] border text-[#221F20] px-4 py-2 rounded-lg cursor-pointer">Add Steps</button>
         </div>
       </div>
-      <button type="submit" class="bg-[#221F20] text-white px-4 py-2 rounded-3xl cursor-pointer">
-        submit
-      </button>
+      <div class="text-center">
+        <button type="submit" class="bg-[#221F20] text-white px-10 py-2 rounded-3xl cursor-pointer">
+          {{ loading ? 'Loading...' : 'Submit'}}
+        </button>
+      </div>
     </form>
     </div>
   </div>

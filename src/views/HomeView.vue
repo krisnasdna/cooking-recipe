@@ -2,12 +2,16 @@
 import { useRecipeStore } from '@/stores/recipies';
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
-import { RouterLink } from 'vue-router';
+import { onBeforeRouteLeave, RouterLink } from 'vue-router';
 const {recipes} = storeToRefs(useRecipeStore())
-const { getRecipes} = useRecipeStore()
+const { getRecipes,resetRecipes} = useRecipeStore()
 
 onMounted(()=>{
   getRecipes()
+})
+
+onBeforeRouteLeave(()=>{
+  resetRecipes()
 })
 </script>
 
@@ -104,5 +108,17 @@ onMounted(()=>{
   <div class="w-full flex justify-center py-8 md:hidden">
     <h6 class="px-6 py-2 bg-[#221F20] text-[#ffeeee] rounded-3xl">See More</h6>
   </div>
+  </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 w-full h-[70%] items-start pt-40 overflow-x-hidden">
+      <div class="flex flex-col bg-[#221F20] py-4 px-4 md:py-10 md:ps-10 md:pe-10 lg:pe-15 justify-between  items-start overflow-hidden relative h-full">
+          <h1 class="text-[1.875rem] lg:text-[3.438rem] 2xl:text-[6.188rem] font-semibold text-[#FFEEEE] leading-[120%]">Capture your foods and share with your friends</h1>
+          <p class="text-base text-[#FFEEEE] text-justify self-end pt-20  md:pt-0 md:pb-0">Take snapshots of your delicious creations and share them with the Pawlicious community. Whether it’s a fancy gimbap or a cheesy comfort dish, your food deserves the spotlight. #PawliciousEats</p>
+      </div>
+      <div class="relative w-full">
+        <img src="@/assets/image/capture.png" alt="" class=" w-full object-cover h-[80%]">
+        <div class="absolute lg:top-1/2 lg:left-105 2xl:left-140 hidden lg:inline-block">
+          <h1 class="text-[1.875rem] lg:text-[2.563rem] 2xl:text-[4.563rem] font-semibold text-[#221F20] leading-[120%] -rotate-90 ps-0">#PawliciousEats</h1>
+        </div>
+      </div>
   </div>
 </template>
