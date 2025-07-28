@@ -14,7 +14,7 @@
                 </div>
                 <div>
                     <h6 class="text-lg font-medium text-[#221F20] mb-2 font-main h-full">
-                        {{ authLoading ? 'Processing....' : 'Logout account' }}
+                        {{ authLoading ? 'Processing...' : 'Logout account' }}
                     </h6>
                     <p class="text-base font-normal font-main text-[#5C5B5B]">
                         Are you sure you want to log out of your account? You'll need to log in again to access your data.

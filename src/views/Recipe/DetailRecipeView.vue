@@ -79,7 +79,7 @@ watch(
             </div>
         </div>
     </div>
-    <div class="px-4 md:px-10 lg:px-15 pt-16">
+    <div class="px-4 md:px-10 lg:px-15 py-16">
         <h1 class="text-[2.563rem] md:text-[3.438rem] lg:text-[4.563rem] font-semibold text-[#221F20]">More recipes</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 pt-5  gap-5 2xl:gap-10">
             <div class="w-full" v-for="recipe in recipes" :key="recipe?.id">

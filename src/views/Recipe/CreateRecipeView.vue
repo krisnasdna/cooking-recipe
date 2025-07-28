@@ -174,7 +174,7 @@ const previewUrl = computed(() => {
       </div>
       <div class="text-center">
         <button type="submit" class="bg-[#221F20] text-white px-10 py-2 rounded-3xl cursor-pointer">
-          {{ loading ? 'Loading...' : 'Submit'}}
+          {{ loading ? 'Processing...' : 'Submit'}}
         </button>
       </div>
     </form>

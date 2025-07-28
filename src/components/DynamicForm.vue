@@ -50,7 +50,7 @@
           class="bg-[#221F20] py-2 px-1 text-white w-full text-lg tracking-wide font-bold rounded-3xl"
           :disabled="loading"
         >
-          {{ loading ? 'Loading...' :schema.forms.name   }}
+          {{ loading ? 'Processing...' :schema.forms.name   }}
         </button>
       </div>
 
