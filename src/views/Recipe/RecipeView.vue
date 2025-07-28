@@ -50,7 +50,7 @@ onBeforeRouteLeave(()=>{
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 pt-5 md:pt-10  lg:pt-20  gap-5 2xl:gap-10 px-4 md:px-10 lg:px-15">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 pt-10 md:pt-10  lg:pt-20  gap-5 2xl:gap-10 px-4 md:px-10 lg:px-15">
       <div class="w-full" v-for="recipe in recipes" :key="recipe?.id">
         <RouterLink :to="`/recipe/${Number(recipe.id)}`">
           <div class="overflow-hidden aspect-square">
@@ -65,7 +65,7 @@ onBeforeRouteLeave(()=>{
       </div>
     </div>
 
-    <div class="flex justify-center items-center flex-1 py-10">
+    <div class="flex justify-center items-center flex-1 pt-10">
       <div v-if="loading" class="text-center">Loading...</div>
       <div v-else-if="!recipes.length" class="text-center">
         <p></p>
