@@ -116,7 +116,7 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col px-4 pt-10 md:px-10 lg:px-15 md:py-20 gap-10">
-    <h1 class="text-[2.563rem] md:text-[3.438rem] 2xl:text-[4.563rem] font-semibold text-[#221F20] leading-[120%]">Create Recipe</h1>
+    <h1 class="text-[2.563rem] md:text-[3.438rem] 2xl:text-[4.563rem] font-semibold text-[#221F20] leading-[120%]">Edit Recipe</h1>
     <div>
     <form @submit.prevent="onSubmit" class="space-y-6">
       <div class="flex flex-col">
