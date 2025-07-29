@@ -66,7 +66,7 @@ async function handleSubmit(values : {}){
     <div class="flex flex-col justify-center items-center px-4 md:px-0 2xl:px-40 h-full pt-10 md:pt-0">
       <div class="w-full">
         <div class="flex flex-col space-y-2">
-          <h3 class="text-[1.875rem] md:text-[2.563rem] font-bold tracking-wide text-center text-[#221F20]">Register</h3>
+          <h3 class="text-[1.875rem] md:text-[2.563rem] font-bold tracking-wide text-center text-[#221F20]">Create new account</h3>
         </div>
         <DynamicForm :schema="formSchema" @onSubmit="handleSubmit"/>
       </div>

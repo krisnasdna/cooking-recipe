@@ -51,7 +51,7 @@ const modal = useModalStore()
                         <RouterLink to="/my-recipes" class="text-base font-semibold" v-if="user" @click="toggleMenu = !toggleMenu" >My Recipe</RouterLink>
                     </div>
                     <div class="flex flex-row justify-end  gap-8" v-if="!user">
-                        <RouterLink :to="{name: 'login'}" class="py-2 px-6 rounded-3xl bg-[#221F20]  font-medium text-[#FFEEEE]" @click="toggleMenu = !toggleMenu">Login</RouterLink>
+                        <RouterLink :to="{name: 'login'}" class="py-2 px-6 rounded-3xl bg-[#221F20]  font-medium text-[#FFEEEE]" @click="toggleMenu = !toggleMenu">Sign In</RouterLink>
                     </div>
                     <div v-else class="flex flex-row justify-between items-center pb-4">
                         <div>
@@ -77,7 +77,7 @@ const modal = useModalStore()
             </RouterLink>
         </div>
         <div class="flex flex-row items-center gap-8" v-if="!user">
-            <RouterLink :to="{name: 'login'}" class="py-2 px-6 rounded-3xl bg-[#FFEEEE]  font-medium text-[#777421]">Login</RouterLink>
+            <RouterLink :to="{name: 'login'}" class="py-2 px-6 rounded-3xl bg-[#FFEEEE]  font-medium text-[#777421]">Sign In</RouterLink>
         </div>
         <div v-else class="flex flex-row items-center gap-10">
             <div>
