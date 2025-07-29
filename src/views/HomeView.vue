@@ -91,7 +91,7 @@ onBeforeRouteLeave(()=>{
         </div>
       </div>
       <div class="w-full flex justify-center py-8 md:hidden">
-        <h6 class="px-6 py-2 bg-[#221F20] text-[#ffeeee] rounded-3xl">See More</h6>
+        <RouterLink :to="{name: 'recipe'}" class="px-6 py-2 bg-[#221F20] text-[#ffeeee] rounded-3xl">See More</RouterLink to="">
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 w-full h-[70%] items-start pt-40 overflow-x-hidden">

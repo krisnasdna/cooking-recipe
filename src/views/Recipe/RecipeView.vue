@@ -68,7 +68,7 @@ onBeforeRouteLeave(()=>{
     <div class="flex justify-center items-center flex-1 pt-10">
       <div v-if="loading" class="text-center">Loading...</div>
       <div v-else-if="!recipes.length" class="text-center">
-        <p></p>
+        <p>Sorry, we couldn't find that recipe</p>
       </div>
       <div v-else-if="error" class="text-center text-red-500">Error: {{ error }}</div>
     </div>
