@@ -172,7 +172,7 @@ const previewUrl = computed(() => {
             <button type="button" @click="addSteps({step: '', instruction: ''})"  class="border-[#221F20] border text-[#221F20] px-4 py-2 rounded-lg cursor-pointer">Add Steps</button>
         </div>
       </div>
-      <div class="text-center">
+      <div class="text-center pb-10">
         <button type="submit" class="bg-[#221F20] text-white px-10 py-2 rounded-3xl cursor-pointer">
           {{ loading ? 'Processing...' : 'Submit'}}
         </button>
