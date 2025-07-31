@@ -29,7 +29,7 @@ onBeforeRouteLeave(()=>{
           </div>
         </div>
         <div class="absolute left-[30%] z-10 hidden lg:inline">
-            <img src="@/assets/image/main.png" alt="">
+            <img src="@/assets/image/main.png" alt="" class="w-[80%]"> 
         </div>
         <div class="self-end pb-14">
             <p class="text-base text-[#5C5B5B] ">A fresh and savory roll made with seasoned rice, creamy avocado, and grilled salmon wrapped in seaweed — ready in under 45 minutes.</p>
@@ -63,7 +63,7 @@ onBeforeRouteLeave(()=>{
         </div>
         <div class="flex flex-col bg-[#221F20] py-4 px-4 md:py-10 md:ps-10 md:pe-10 lg:pe-15 justify-between  items-start overflow-hidden relative h-full">
             <h1 class="text-[1.875rem] lg:text-[3.438rem] 2xl:text-[6.188rem] font-semibold text-[#FFEEEE] leading-[120%]">Craft Flavors That Inspire You</h1>
-            <div class="absolute lg:-right-25 2xl:right-0 lg:top-[15%] 2xl:top-[30%] hidden 2xl:inline">
+            <div class="absolute lg:-right-25 2xl:right-0 lg:top-[15%] 2xl:top-[25%] hidden 2xl:inline -z-0">
               <img src="@/assets/image/maskot.png" alt="" class="lg:w-[70%] 2xl:w-full">
             </div>
             <p class="text-base text-[#FFEEEE] text-justify self-end pt-20  md:pt-0 md:pb-0">Explore our collection of playful and easy-to-follow recipes that transform everyday ingredients into something unforgettable. Whether you're cooking for yourself or sharing with friends, Pawlicious is your purrfect companion in the kitchen, ready to add a sprinkle of fun and a dash of feline charm to every dish.</p>
